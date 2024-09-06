@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUSIC THEORY BY KRUBOY</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #7f91db;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            cursor: pointer;
+        }
+
+        #container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 60px;
+        }
+
+        #menu {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            margin-right: 20px;
+            height: 500px;
+        }
+
+        #menu input {
+            font-size: 24px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 2px solid #007bff;
+        }
+
+        #menu button {
+            background-color: #007bff;
+            border: 5px solid #fff;
+            color: white;
+            font-size: 40px;
+            padding: 0;
+            margin: 10px 0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 250px;
+            height: calc(100% / 3 - 20px);
+            box-sizing: border-box;
+        }
+
+        #menu button:hover {
+            transform: scale(1.1);
+            background-color: #0056b3;
+        }
+
+        #menu button:focus {
+            outline: none;
+        }
+
+        #menusp {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin: 520px auto;
+            height: auto;
+            width: 100%;
+        }
+
+        #menusp input {
+            font-size: 18px;
+            padding: 5px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 2px solid hsl(0, 0%, 100%);
+        }
+
+        #menusp button {
+            background-color: hwb(128 2% 12%);
+            border: 5px solid hwb(0 97% 3%);
+            color: white;
+            font-size: 20px;
+            padding: 5px;
+            margin: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 150px;
+            height: 50px;
+            box-sizing: border-box;
+        }
+
+        #menusp button:hover {
+            transform: scale(1.1);
+            background-color: hsl(72, 100%, 48%);
+        }
+
+        #menusp button:focus {
+            outline: none;
+        }
+
+        #musicCanvas {
+            position: relative;
+            width: 1000px;
+            height: 650px;
+            border: 20px solid #fff;
+            border-radius: 58px;
+            background: url('pic/gameS.png') no-repeat center center;
+            background-size: cover;
+            cursor: url('pic/clickNote.png'), auto; /* Custom cursor */
+        }
+
+        .quarter-note {
+            position: absolute;
+            font-size: 32px;
+            color: black;
+            animation: fadeOut 2s forwards;
+        }
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+
+
+        #clickNote {
+            position: absolute;
+            display: none; /* ซ่อนเริ่มต้น */
+            width: 50px; /* ปรับขนาดให้เหมาะสม */
+            height: 50px; /* ปรับขนาดให้เหมาะสม */
+            background: url('pic/clickNote.png') no-repeat center center;
+            background-size: contain;
+        }
+
+     
+        .note {
+            position: absolute;
+            font-size: 40px;
+            color: black;
+            font-weight: bold;
+        }
+
+        #correctMessage {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: green;
+            font-weight: bold;
+        }
+
+        #wall {
+            position: absolute;
+            top: 170px;
+            left: 10px;
+            width: 20px;
+            height: 90px;
+            background-color: #8B4513;
+        }
+
+        #loseMessage {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 64px;
+            color: red;
+            font-weight: bold;
+        }
+
+        #scoreBoard {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .staff-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background-color: black;
+        }
+
+        .note-image {
+            position: absolute;
+            top: 205px;
+            left: 0;
+            width: 160px;
+        }
+
+        .staff-line:nth-child(1) {
+            top: 440px;
+        }
+
+        .staff-line:nth-child(2) {
+            top: 395px;
+        }
+
+        .staff-line:nth-child(3) {
+            top: 350px;
+        }
+
+        .staff-line:nth-child(4) {
+            top: 305px;
+        }
+
+        .staff-line:nth-child(5) {
+            top: 260px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="menu">
+            <input type="text" id="playerName" placeholder="ใส่ชื่อของคุณ">
+            <button onclick="startGame()">เล่นเกมส์</button>
+            <button onclick="switchMode('learn.html')">เรียน</button>
+            <button onclick="switchMode('score.html')">คะแนน</button>
+        </div>
+
+        <div id="musicCanvas">
+            <div class="staff-line" style="top: 440px;"></div>
+            <div class="staff-line" style="top: 395px;"></div>
+            <div class="staff-line" style="top: 350px;"></div>
+            <div class="staff-line" style="top: 305px;"></div>
+            <div class="staff-line" style="top: 260px;"></div>
+            <img src="pic/note1.png" class="note-image" alt="Note Image">
+            <div id="wall"></div>
+            <div id="loseMessage">แพ้!</div>
+            <div id="correctMessage">คุณใส่โน้ตถูกต้อง!</div>
+            <div id="scoreBoard">ชื่อ: <span id="displayName"></span> คะแนน: <span id="score">0</span></div>
+
+            
+        </div>
+    </div>
+
+    <script>
+        const gameStartAudio = new Audio('sounds/game-start.mp3');
+        const backgroundAudio = new Audio('sounds/background.mp3');
+        backgroundAudio.loop = true;
+        backgroundAudio.volume = 0.1;
+    
+        const notes = [
+            { y: 190, note: 'D', sound: 'sounds/D.mp3', lineY: 470 },
+            { y: 190, note: 'E', sound: 'sounds/E.mp3', lineY: 440 },
+            { y: 190, note: 'F', sound: 'sounds/F.mp3', lineY: 417.5 },
+            { y: 190, note: 'G', sound: 'sounds/G.mp3', lineY: 395 },
+            { y: 190, note: 'A', sound: 'sounds/A.mp3', lineY: 372.5 },
+            { y: 190, note: 'B', sound: 'sounds/B.mp3', lineY: 350 },
+            { y: 190, note: 'C', sound: 'sounds/C.mp3', lineY: 282.5 },
+            { y: 190, note: 'D', sound: 'sounds/D.mp3', lineY: 260 }
+        ];
+    
+        let currentNote;
+        let score = 0;
+        let gameInterval;
+        let rounds = 0;
+        const maxRounds = 5;
+        let gameSpeed = 200; // ความเร็วเริ่มต้น
+        let isScoreSaved = true; // เพิ่มตัวแปรเพื่อตรวจสอบการบันทึกคะแนน
+    
+        function startGame() {
+            score = 0;
+            rounds = 0;
+            gameSpeed = 200;
+            const playerName = document.getElementById('playerName').value;
+            document.getElementById('displayName').textContent = playerName;
+            document.getElementById('score').textContent = score;
+            isScoreSaved = true; // 
+            gameStartAudio.play();
+            backgroundAudio.play();
+    
+            spawnNote();
+            gameInterval = setInterval(moveNote, gameSpeed);
+        }
+    
+        function spawnNote() {
+            const randomIndex = Math.floor(Math.random() * notes.length);
+            const randomNote = notes[randomIndex];
+            currentNote = document.createElement('div');
+            currentNote.className = 'note';
+            currentNote.style.top = randomNote.y + 'px';
+            currentNote.textContent = randomNote.note;
+            currentNote.dataset.note = randomNote.note;
+            currentNote.dataset.sound = randomNote.sound;
+            currentNote.dataset.lineY = randomNote.lineY;
+            currentNote.style.left = '980px';
+            document.getElementById('musicCanvas').appendChild(currentNote);
+        }
+    
+        function moveNote() {
+            const notePos = parseInt(currentNote.style.left);
+            if (notePos > 50) {
+                currentNote.style.left = notePos - 5 + 'px';
+            } else {
+                clearInterval(gameInterval);
+                document.getElementById('loseMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('loseMessage').style.display = 'none';
+                    currentNote.remove();
+                    rounds++;
+                    if (rounds >= maxRounds) {
+                        endGame();
+                    } else {
+                        gameSpeed = Math.max(gameSpeed * 0.9, 50);
+                        spawnNote();
+                        gameInterval = setInterval(moveNote, gameSpeed);
+                    }
+                }, 2000);
+                if (isScoreSaved) {
+                    saveScore(); // ย้ายการบันทึกคะแนนไปที่ฟังก์ชันแยกต่างหาก
+                }
+            }
+        }
+    
+        function saveScore() {
+            isScoreSaved = false; // ตั้งค่าเริ่มต้น
+            const data = { name: document.getElementById('playerName').value, score: score };
+            fetch('save_score.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                isScoreSaved = true;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setTimeout(saveScore, 2000); // Retry หากเกิดข้อผิดพลาด
+            })
+        }
+    
+        function showQuarterNoteAt(x, y) {
+            const quarterNote = document.createElement('div');
+            quarterNote.className = 'quarter-note';
+            quarterNote.textContent = '♩'; // สัญลักษณ์ Quarter Note
+            quarterNote.style.left = (x - 16) + 'px'; // ปรับตำแหน่ง x
+            quarterNote.style.top = (y - 32) + 'px';  // ปรับตำแหน่ง y
+            document.getElementById('musicCanvas').appendChild(quarterNote);
+    
+            // ซ่อนโน้ตหลังจาก 2 วินาที
+            setTimeout(() => {
+                quarterNote.remove();
+            }, 2000);
+        }
+    
+        document.getElementById('musicCanvas').addEventListener('click', function (event) {
+            const clickedY = event.clientY - this.getBoundingClientRect().top;
+            const clickedX = event.clientX - this.getBoundingClientRect().left;
+    
+            // แสดงโน้ตที่ตำแหน่งที่คลิก
+            showQuarterNoteAt(clickedX, clickedY);
+    
+            const clickedLine = notes.find(note => Math.abs(note.lineY - clickedY) < 10);
+    
+            if (clickedLine && currentNote && clickedLine.note === currentNote.dataset.note && clickedX < parseInt(currentNote.style.left) + 20 && clickedX > parseInt(currentNote.style.left) - 20) {
+                clearInterval(gameInterval);
+                new Audio(clickedLine.sound).play();
+                document.getElementById('correctMessage').style.display = 'block';
+                setTimeout(() => document.getElementById('correctMessage').style.display = 'none', 1000);
+                currentNote.remove();
+                score++;
+                document.getElementById('score').textContent = score;
+                rounds++;
+                if (rounds >= maxRounds) {
+                    endGame();
+                } else {
+                    gameSpeed = Math.max(gameSpeed * 0.9, 50); // เพิ่มความเร็วโดยลดเวลา interval ลง
+                    spawnNote();
+                    gameInterval = setInterval(moveNote, gameSpeed);
+                }
+            }
+        });
+    
+        function switchMode(page) {
+            window.location.href = page;
+        }
+    
+        function endGame() {
+            clearInterval(gameInterval);
+            alert('จบเกม! คะแนนของคุณคือ: ' + score);
+            location.reload();
+        }
+    </script>
+    
+    
+</body>
+
+</html>

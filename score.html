@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUSIC THEORY BY KRUBOY</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #7f91db;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        #container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 60px;
+        }
+
+        #menu {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            margin-right: 20px;
+            height: 500px; /* ความสูงของกล่องเมนู */
+        }
+
+        #menu button {
+            background-color: #007bff; /* สีฟ้าสำหรับปุ่ม */
+            border: 5px solid #fff; /* ขอบสีขาว */
+            color: white;
+            font-size: 40px;
+            padding: 0; /* ลบ padding เพื่อตั้งขนาดปุ่มให้เหมาะสม */
+            margin: 10px 0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 250px; /* กว้างเท่ากับความกว้างของกล่องเมนู */
+            height: calc(100% / 3 - 20px); /* ความสูงของปุ่มแต่ละปุ่มพอดีกับกล่อง */
+            box-sizing: border-box;
+        }
+
+        #menu button:hover {
+            transform: scale(1.1);
+            background-color: #0056b3;
+        }
+
+        #menu button:focus {
+            outline: none;
+        }
+
+        #musicCanvas {
+            border: 15px solid hsl(51, 100%, 50%);
+            border-radius: 58px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: rgb(253, 253, 253); /* พื้นสีขาว */
+            width: 1000px;
+            height: 650px;
+        }
+
+        #scoreTable {
+            border: 2px solid #007bff;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px;
+            background-color: #fff;
+            width: 80%;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        #scoreTable table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #scoreTable th, #scoreTable td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #scoreTable th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="menu">
+            <button onclick="switchMode('learn.html')">เรียน</button>
+            <button onclick="switchMode('game.html')">เล่นเกมส์</button>
+            <button onclick="switchMode('score.html')">คะแนน</button>
+        </div>
+
+        <div id="musicCanvas"> 
+            
+
+            <div id="scoreTable">
+                <table>
+                    <thead> 
+                        <tr>
+                            <th>ชื่อผู้เล่น</th>
+                            <th>คะแนน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreTableBody">
+                        <!-- ข้อมูลคะแนนจะถูกแทรกที่นี่ -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchMode(page) {
+            window.location.href = page;
+        }
+
+        function fetchScores() {
+            fetch('score.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('scoreTableBody');
+                    tableBody.innerHTML = '';
+
+                    // จำกัดให้แสดง 5 อันดับแรก
+                    const topScores = data.scores.slice(0, 10);
+
+                    topScores.forEach(score => {
+                        const row = document.createElement('tr');
+                        const nameCell = document.createElement('td');
+                        const scoreCell = document.createElement('td');
+
+                        nameCell.textContent = score.name;
+                        scoreCell.textContent = score.score;
+
+                        row.appendChild(nameCell);
+                        row.appendChild(scoreCell);
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching scores:', error));
+        }
+
+        window.onload = function () {
+            fetchScores();
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUSIC THEORY BY KRUBOY</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #7f91db;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            cursor: url('music-notes.png'), auto; /* ใช้ path ของรูปตัวโน้ตที่คุณต้องการ */
+        }
+
+        #container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 60px;
+        }
+
+        #menu {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            margin-right: 20px;
+            height: 500px; /* ความสูงของกล่องเมนู */
+        }
+
+        #menu button {
+            background-color: #007bff; /* สีฟ้าสำหรับปุ่ม */
+            border: 5px solid #fff; /* ขอบสีขาว */
+            color: white;
+            font-size: 40px;
+            padding: 0; /* ลบ padding เพื่อตั้งขนาดปุ่มให้เหมาะสม */
+            margin: 10px 0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 250px; /* กว้างเท่ากับความกว้างของกล่องเมนู */
+            height: calc(100% / 3 - 20px); /* ความสูงของปุ่มแต่ละปุ่มพอดีกับกล่อง */
+            box-sizing: border-box;
+        }
+
+        #menu button:hover {
+            transform: scale(1.1);
+            background-color: #0056b3;
+        }
+
+        #menu button:focus {
+            outline: none;
+        }
+
+        #musicCanvas {
+            border: 20px solid #fff;
+            border-radius: 58px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #fff; /* พื้นสีขาว */
+            overflow: hidden; /* ซ่อนสิ่งที่เกินขอบ */
+        }
+
+        #musicCanvas canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .nav-buttons button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        #noteBox {
+            display: none;
+            position: absolute;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 7px;
+            font-size: 16px;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- คอนเทนเนอร์สำหรับจัดวางเมนูและแคนวาส -->
+    <div id="container">
+        <!-- เมนูสำหรับเลือกโหมด -->
+        <div id="menu">
+            <button onclick="switchMode('learn.html')">เรียน</button>
+            <button onclick="switchMode('game.html')">เล่นเกมส์</button>
+            <button onclick="switchMode('score.html')">คะแนน</button>
+        </div>
+
+        <!-- แคนวาสสำหรับแสดงรูปภาพ -->
+        <div id="musicCanvas">
+            <canvas id="canvas" width="1000" height="650"></canvas>
+            <!-- ปุ่มถัดไปและย้อนหลัง -->
+            <div class="nav-buttons">
+                <button onclick="previousImage()">ย้อนกลับ</button>
+                <button onclick="nextImage()">ถัดไป</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- กล่องข้อความสำหรับแสดงตัวโน้ต -->
+    <div id="noteBox"></div>
+
+    <script>
+        const images = ['BG.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7jpg', '8.jpg', '9.jpg', '10.jpg', '11.jpg', '12.jpg', '13.jpg', '14.jpg', '15.jpg', '16.jpg'];
+        let currentIndex = 0;
+
+       
+
+        function updateImage() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const imgElement = new Image();
+            imgElement.src = 'pic/' + images[currentIndex];
+
+            imgElement.onload = function() {
+                // วาดภาพพื้นหลัง
+                ctx.drawImage(imgElement, 0, 0, canvas.width, canvas.height);
+
+                // วาดเส้นโน้ตสำหรับภาพที่ 4
+                if (currentIndex === 3) {
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    lines.forEach(line => {
+                        ctx.beginPath();
+                        ctx.moveTo(50, line.y);
+                        ctx.lineTo(canvas.width - 50, line.y);
+                        ctx.stroke();
+                    });
+                }
+            };
+
+            if (currentIndex === 3) {
+                // เพิ่ม event listener สำหรับการคลิกที่แคนวาส
+                canvas.addEventListener('click', playSound);
+            } else {
+                // ลบ event listener หากไม่ใช่ภาพที่ 4
+                canvas.removeEventListener('click', playSound);
+            }
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateImage();
+        }
+
+        function previousImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateImage();
+        }
+
+        function switchMode(page) {
+            window.location.href = page;
+        }
+
+        function playSound(event) {
+            const canvas = document.getElementById('canvas');
+            const rect = canvas.getBoundingClientRect();
+            const y = event.clientY - rect.top;
+
+            // หาตำแหน่งของเส้นโน้ตที่คลิก
+            for (const line of lines) {
+                if (Math.abs(y - line.y) < 10) { // 10 คือค่าความแม่นยำของการคลิก
+                    // เล่นเสียงโน้ต
+                    const audio = new Audio(line.sound);
+                    audio.play();
+
+                    // แสดงโน้ตที่คลิกในกล่องข้อความ
+                    const noteBox = document.getElementById('noteBox');
+                    noteBox.textContent = 'โน้ตที่คลิก: ' + line.note;
+                    noteBox.style.left = event.clientX + 'px';
+                    noteBox.style.top = (event.clientY - 50) + 'px'; // ปรับตำแหน่งของกล่องให้สูงขึ้น
+
+                    // แสดงกล่องข้อความ
+                    noteBox.style.display = 'block';
+
+                    // ปิดกล่องข้อความอัตโนมัติหลังจาก 2 วินาที
+                    setTimeout(() => {
+                        noteBox.style.opacity = '0';
+                        setTimeout(() => {
+                            noteBox.style.display = 'none';
+                            noteBox.style.opacity = '1'; // รีเซ็ตค่า opacity
+                        }, 500);
+                    }, 2000);
+                    return;
+                }
+            }
+        }
+
+        // เรียกฟังก์ชัน updateImage เมื่อโหลดหน้า
+        window.onload = updateImage;
+    </script>
+</body>
+
+</html>
