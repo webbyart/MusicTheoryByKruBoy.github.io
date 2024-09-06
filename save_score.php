@@ -4,7 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 // Set timezone to Thailand
 date_default_timezone_set('Asia/Bangkok');
 // Database credentials
-$servername = "localhost";
+$servername = "https://demo.phpmyadmin.net/";
 $username = "root";
 $password = "";
 $dbname = "game_scores";
