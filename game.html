@@ -229,7 +229,7 @@
     <div id="container">
         <div id="menu">
             <input type="text" id="playerName" placeholder="ใส่ชื่อของคุณ">
-            <button onclick="startGame()">เล่นเกมส์</button>
+            <button onclick="startGame()">เริ่มเกมส์</button>
             <button onclick="switchMode('learn.html')">เรียน</button>
             <button onclick="switchMode('score.html')">คะแนน</button>
         </div>
@@ -257,21 +257,21 @@
         backgroundAudio.volume = 0.1;
     
         const notes = [
-            { y: 190, note: 'D', sound: 'sounds/D.mp3', lineY: 470 },
-            { y: 190, note: 'E', sound: 'sounds/E.mp3', lineY: 440 },
-            { y: 190, note: 'F', sound: 'sounds/F.mp3', lineY: 417.5 },
-            { y: 190, note: 'G', sound: 'sounds/G.mp3', lineY: 395 },
-            { y: 190, note: 'A', sound: 'sounds/A.mp3', lineY: 372.5 },
-            { y: 190, note: 'B', sound: 'sounds/B.mp3', lineY: 350 },
-            { y: 190, note: 'C', sound: 'sounds/C.mp3', lineY: 282.5 },
-            { y: 190, note: 'D', sound: 'sounds/D.mp3', lineY: 260 }
+            //{ y: 190, note: 'C', sound: 'sounds/1เสียง C.mp3', lineY: 580 },
+            //{ y: 190, note: 'D', sound: 'sounds/2เสียงD.mp3', lineY: 475 },
+           // { y: 190, note: 'E', sound: 'sounds/3เสียงE.mp3', lineY: 465 },
+           // { y: 190, note: 'F', sound: 'sounds/4เสียงF.mp3', lineY: 455 },
+            //{ y: 190, note: 'G', sound: 'sounds/5เสียงG.mp3', lineY: 425 },
+              { y: 190, note: 'A', sound: 'sounds/6เสียงA.mp3', lineY: 415 },
+            //{ y: 190, note: 'B', sound: 'sounds/7เสียงB.mp3', lineY: 280 },
+            //{ y: 190, note: 'C#', sound: 'sounds/8เสียง Cสูง.mp3', lineY: 250 }
         ];
     
         let currentNote;
         let score = 0;
         let gameInterval;
         let rounds = 0;
-        const maxRounds = 30;
+        const maxRounds = 3;// จำนวนรอบ
         let gameSpeed = 300; // ความเร็วเริ่มต้น
         let isScoreSaved = true; // เพิ่มตัวแปรเพื่อตรวจสอบการบันทึกคะแนน
     
