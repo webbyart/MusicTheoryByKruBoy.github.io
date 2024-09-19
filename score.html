@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,14 +11,12 @@
             font-family: 'Arial', sans-serif;
             color: #333;
         }
-
         #container {
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 60px;
         }
-
         #menu {
             display: flex;
             flex-direction: column;
@@ -27,7 +24,6 @@
             margin-right: 20px;
             height: 500px; /* ความสูงของกล่องเมนู */
         }
-
         #menu button {
             background-color: #007bff; /* สีฟ้าสำหรับปุ่ม */
             border: 5px solid #fff; /* ขอบสีขาว */
@@ -42,16 +38,13 @@
             height: calc(100% / 3 - 20px); /* ความสูงของปุ่มแต่ละปุ่มพอดีกับกล่อง */
             box-sizing: border-box;
         }
-
         #menu button:hover {
             transform: scale(1.1);
             background-color: #0056b3;
         }
-
         #menu button:focus {
             outline: none;
         }
-
         #musicCanvas {
             border: 15px solid hsl(51, 100%, 50%);
             border-radius: 58px;
@@ -63,7 +56,6 @@
             width: 1000px;
             height: 650px;
         }
-
         #scoreTable {
             border: 2px solid #007bff;
             border-radius: 15px;
@@ -74,44 +66,21 @@
             max-height: 500px;
             overflow-y: auto;
         }
-
         #scoreTable table {
             width: 100%;
             border-collapse: collapse;
         }
-
         #scoreTable th, #scoreTable td {
             padding: 10px;
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
-
         #scoreTable th {
             background-color: #007bff;
             color: white;
         }
-
-        #pagination {
-            display: flex;
-            justify-content: center;
-            margin: 10px 0;
-        }
-
-        #pagination button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            margin: 0 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        #pagination button:disabled {
-            background-color: #ddd;
-        }
     </style>
 </head>
-
 <body>
     <div id="container">
         <div id="menu">
@@ -119,108 +88,45 @@
             <button onclick="switchMode('game.html')">เล่นเกมส์</button>
             <button onclick="switchMode('score.html')">คะแนน</button>
         </div>
-
-        <div id="musicCanvas"> 
+        <div id="musicCanvas">
             <div id="scoreTable">
                 <table>
-                    <thead> 
+                    <thead>
                         <tr>
+                            <th>ID</th>
                             <th>ชื่อผู้เล่น</th>
                             <th>คะแนน</th>
                         </tr>
                     </thead>
                     <tbody id="scoreTableBody">
-                        <!-- ข้อมูลคะแนนจะถูกแทรกที่นี่ -->
+                        <tr><td>1</td><td>จีราศักดิ์</td><td>30</td></tr>
+                        <tr><td>2</td><td>กัญชพร</td><td>30</td></tr>
+                        <tr><td>3</td><td>เข็มนิจ</td><td>30</td></tr>
+                        <tr><td>4</td><td>ดวงฤดี</td><td>30</td></tr>
+                        <tr><td>5</td><td>หฤทัย</td><td>30</td></tr>
+                        <tr><td>6</td><td>สุทธิดา</td><td>30</td></tr>
+                        <tr><td>7</td><td>ณิชา</td><td>30</td></tr>
+                        <tr><td>8</td><td>ภาพิมล</td><td>28</td></tr>
+                        <tr><td>9</td><td>ลลิตา</td><td>28</td></tr>
+                        <tr><td>10</td><td>พวย</td><td>28</td></tr>
+                        <tr><td>11</td><td>นราธิป</td><td>27</td></tr>
+                        <tr><td>12</td><td>วัลลดา</td><td>25</td></tr>
+                        <tr><td>13</td><td>ดารารัตน์</td><td>25</td></tr>
+                        <tr><td>14</td><td>เอกพงษ์</td><td>25</td></tr>
+                        <tr><td>15</td><td>ตรีเพชร</td><td>25</td></tr>
+                        <tr><td>16</td><td>ธวัชชัย</td><td>25</td></tr>
+                        <tr><td>17</td><td>ขวัญชัย</td><td>25</td></tr>
+                        <tr><td>18</td><td>โอ๊ค</td><td>20</td></tr>
+                        <tr><td>19</td><td>สิทธินนท์</td><td>15</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
-    <div id="pagination"></div>
-
     <script>
-        const itemsPerPage = 5;
-        let currentPage = 1;
-        let totalPages = 1;
-        let scoresData = [];
-
         function switchMode(page) {
             window.location.href = page;
         }
-
-        // ฟังก์ชันในการดึงข้อมูลจาก score.php
-        function fetchScores() {
-            fetch('score.php')
-                .then(response => response.json())
-                .then(data => {
-                    scoresData = data.scores;
-                    totalPages = Math.ceil(scoresData.length / itemsPerPage); // คำนวณจำนวนหน้าทั้งหมด
-                    displayScores();
-                })
-                .catch(error => console.error('Error fetching scores:', error));
-        }
-
-        // ฟังก์ชันแสดงผลคะแนนตามหน้าปัจจุบัน
-        function displayScores() {
-            const tableBody = document.getElementById('scoreTableBody');
-            tableBody.innerHTML = '';
-
-            // หาข้อมูลที่ต้องแสดงในหน้าปัจจุบัน
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const scoresToDisplay = scoresData.slice(startIndex, endIndex);
-
-            scoresToDisplay.forEach(score => {
-                const row = document.createElement('tr');
-                const nameCell = document.createElement('td');
-                const scoreCell = document.createElement('td');
-
-                nameCell.textContent = score.name;
-                scoreCell.textContent = score.score;
-
-                row.appendChild(nameCell);
-                row.appendChild(scoreCell);
-                tableBody.appendChild(row);
-            });
-
-            updatePagination();
-        }
-
-        // ฟังก์ชันอัปเดตการแสดงหน้าปัจจุบันและปุ่มเปลี่ยนหน้า
-        function updatePagination() {
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = '';
-
-            // ปุ่มก่อนหน้า
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'ก่อนหน้า';
-            prevButton.disabled = currentPage === 1;
-            prevButton.onclick = function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    displayScores();
-                }
-            };
-            pagination.appendChild(prevButton);
-
-            // ปุ่มถัดไป
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'ถัดไป';
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.onclick = function() {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    displayScores();
-                }
-            };
-            pagination.appendChild(nextButton);
-        }
-
-        window.onload = function () {
-            fetchScores();
-        };
     </script>
 </body>
-
 </html>
