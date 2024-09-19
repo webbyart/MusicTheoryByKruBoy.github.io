@@ -18,7 +18,7 @@ if ($conn->connect_error) {
 // Set charset to UTF-8
 $conn->set_charset("utf8mb4");
 // Fetch scores
-$sql = "SELECT `name`, `score` FROM `scores` ORDER BY `score` DESC";
+$sql = "SELECT `id`, `name`, `score`  FROM `scores` ORDER BY `score` DESC";
 $result = $conn->query($sql);
 
 // Create array to store data
@@ -134,6 +134,7 @@ $conn->close();
                 <table>
                     <thead>
                         <tr>
+                            <th>ลำดับที่</th>
                             <th>ชื่อผู้เล่น</th>
                             <th>คะแนน</th>
                         </tr>
@@ -142,6 +143,7 @@ $conn->close();
                         <?php
                         foreach ($scores as $score) {
                             echo "<tr>";
+                            echo "<td>{$score['id']}</td>";
                             echo "<td>{$score['name']}</td>";
                             echo "<td>{$score['score']}</td>";
                             echo "</tr>";
