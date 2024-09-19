@@ -20,7 +20,7 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 if ($requestMethod == 'GET') {
     // คำขอ GET - ดึงข้อมูลคะแนน
-    $sql = "SELECT `name`, `score` FROM `scores` ORDER BY `score` DESC LIMIT 10";
+    $sql = "SELECT `name`, `score` FROM `scores` ORDER BY `score`";
     $result = $conn->query($sql);
 
     // สร้าง array สำหรับเก็บข้อมูล
