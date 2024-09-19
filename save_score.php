@@ -4,10 +4,10 @@ header("Content-Type: application/json; charset=UTF-8");
 // Set timezone to Thailand
 date_default_timezone_set('Asia/Bangkok');
 // Database credentials
-$servername = "https://demo.phpmyadmin.net/";
-$username = "root";
-$password = "";
-$dbname = "game_scores";
+$servername = "sql12.freesqldatabase.com";
+$username = "sql12732167";
+$password = "rj4s54kWSu";
+$dbname = "sql12732167";
 
 // Create a connection
 $conn = new mysqli($servername, $username, $password, $dbname);
