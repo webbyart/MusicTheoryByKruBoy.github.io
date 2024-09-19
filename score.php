@@ -2,10 +2,10 @@
 header('Access-Control-Allow-Origin: *');
 header("Content-Type: application/json; charset=UTF-8");
 
-$servername = "https://demo.phpmyadmin.net/"; // เปลี่ยนเป็นเซิร์ฟเวอร์ฐานข้อมูลของคุณ
-$username = "root"; // เปลี่ยนเป็นชื่อผู้ใช้ฐานข้อมูลของคุณ
-$password = ""; // เปลี่ยนเป็นรหัสผ่านของคุณ
-$dbname = "game_scores"; // ชื่อฐานข้อมูลที่คุณสร้าง
+$servername = "sql12.freesqldatabase.com";
+$username = "sql12732167";
+$password = "rj4s54kWSu";
+$dbname = "sql12732167";
 
 // สร้างการเชื่อมต่อ
 $conn = new mysqli($servername, $username, $password, $dbname);
