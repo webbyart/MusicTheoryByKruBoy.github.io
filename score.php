@@ -7,38 +7,41 @@ $username = "sql12732167";
 $password = "rj4s54kWSu";
 $dbname = "sql12732167";
 
-// สร้างการเชื่อมต่อ
+// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// ตรวจสอบการเชื่อมต่อ
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// ตรวจสอบประเภทคำขอ (GET หรือ POST)
+// Check request method
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 if ($requestMethod == 'GET') {
-    // คำขอ GET - ดึงข้อมูลคะแนน
-    $sql = "SELECT `name`, `score` FROM `scores` ORDER BY `score`DESC";
+    // GET request - Fetch scores
+    $sql = "SELECT `name`, `score` FROM `scores` ORDER BY `score` DESC";
     $result = $conn->query($sql);
 
-    // สร้าง array สำหรับเก็บข้อมูล
+    // Create array to store data
     $scores = array();
 
-    // ตรวจสอบว่ามีข้อมูลหรือไม่
-    if ($result->num_rows > 0) {
-        // เก็บข้อมูลใน array
-        while ($row = $result->fetch_assoc()) {
-            $scores[] = $row;
+    if ($result) {
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $scores[] = $row;
+            }
         }
+    } else {
+        // Output SQL error
+        echo json_encode(array('error' => $conn->error));
+        exit;
     }
 
-    // ส่งข้อมูลเป็น JSON
-    header('Content-Type: application/json');
+    // Send data as JSON
     echo json_encode(array('scores' => $scores));
 } elseif ($requestMethod == 'POST') {
-    // คำขอ POST - เพิ่มข้อมูลคะแนน
+    // POST request - Insert score
     $data = json_decode(file_get_contents('php://input'), true);
     $name = $data['name'];
     $score = $data['score'];
@@ -56,10 +59,9 @@ if ($requestMethod == 'GET') {
     }
 
     $stmt->close();
-    header('Content-Type: application/json');
     echo json_encode($response);
 }
 
-// ปิดการเชื่อมต่อ
+// Close connection
 $conn->close();
 ?>
