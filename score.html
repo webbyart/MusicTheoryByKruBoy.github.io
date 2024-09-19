@@ -90,6 +90,25 @@
             background-color: #007bff;
             color: white;
         }
+
+        #pagination {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        #pagination button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        #pagination button:disabled {
+            background-color: #ddd;
+        }
     </style>
 </head>
 
@@ -102,8 +121,6 @@
         </div>
 
         <div id="musicCanvas"> 
-            
-
             <div id="scoreTable">
                 <table>
                     <thead> 
@@ -120,35 +137,84 @@
         </div>
     </div>
 
+    <div id="pagination"></div>
+
     <script>
+        const itemsPerPage = 5;
+        let currentPage = 1;
+        let totalPages = 1;
+        let scoresData = [];
+
         function switchMode(page) {
             window.location.href = page;
         }
 
+        // ฟังก์ชันในการดึงข้อมูลจาก score.php
         function fetchScores() {
             fetch('score.php')
                 .then(response => response.json())
                 .then(data => {
-                    const tableBody = document.getElementById('scoreTableBody');
-                    tableBody.innerHTML = '';
-
-                    // จำกัดให้แสดง 5 อันดับแรก
-                    const topScores = data.scores.slice(0, 10);
-
-                    topScores.forEach(score => {
-                        const row = document.createElement('tr');
-                        const nameCell = document.createElement('td');
-                        const scoreCell = document.createElement('td');
-
-                        nameCell.textContent = score.name;
-                        scoreCell.textContent = score.score;
-
-                        row.appendChild(nameCell);
-                        row.appendChild(scoreCell);
-                        tableBody.appendChild(row);
-                    });
+                    scoresData = data.scores;
+                    totalPages = Math.ceil(scoresData.length / itemsPerPage); // คำนวณจำนวนหน้าทั้งหมด
+                    displayScores();
                 })
                 .catch(error => console.error('Error fetching scores:', error));
+        }
+
+        // ฟังก์ชันแสดงผลคะแนนตามหน้าปัจจุบัน
+        function displayScores() {
+            const tableBody = document.getElementById('scoreTableBody');
+            tableBody.innerHTML = '';
+
+            // หาข้อมูลที่ต้องแสดงในหน้าปัจจุบัน
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const scoresToDisplay = scoresData.slice(startIndex, endIndex);
+
+            scoresToDisplay.forEach(score => {
+                const row = document.createElement('tr');
+                const nameCell = document.createElement('td');
+                const scoreCell = document.createElement('td');
+
+                nameCell.textContent = score.name;
+                scoreCell.textContent = score.score;
+
+                row.appendChild(nameCell);
+                row.appendChild(scoreCell);
+                tableBody.appendChild(row);
+            });
+
+            updatePagination();
+        }
+
+        // ฟังก์ชันอัปเดตการแสดงหน้าปัจจุบันและปุ่มเปลี่ยนหน้า
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            // ปุ่มก่อนหน้า
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'ก่อนหน้า';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayScores();
+                }
+            };
+            pagination.appendChild(prevButton);
+
+            // ปุ่มถัดไป
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'ถัดไป';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayScores();
+                }
+            };
+            pagination.appendChild(nextButton);
         }
 
         window.onload = function () {
